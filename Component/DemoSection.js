@@ -20,7 +20,7 @@ export default DemoSection
 
 const st = StyleSheet.create({
        container:{ marginVertical: 10, padding: 15, backgroundColor: '#fff',
-               borderRadius: 5, shadowColor: '#000', shadowOpacity: 0.1,
+               borderRadius: 5, shadowColor: '#000', shadowOpacity: 0.1,borderWidth:2,
                shadowRadius: 10, elevation: 5
        },
        title:{ fontSize: 20, fontWeight: 'bold', marginBottom: 10, color:'blue'},

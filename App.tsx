@@ -1,79 +1,90 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView, TextInput } from 'react-native'
-import React ,{useState}from 'react'
-import Banner from './Component/Banner'
-import DemoTextInput from './Component/DemoTextInput'
-import CustomHeader from './Component/CustomHeader'
-import DemoSection from './Component/DemoSection'
+
+
+
+import { ScrollView, StyleSheet, Text, View, Image } from 'react-native'
+import React, { useEffect, useState } from 'react'
 
 const App = () => {
-  const [hoTen, sethoTen] = useState('')
- const [email, setEmail] = useState('')
+  const [dsDuLieu, setdsDuLieu] = useState(null)
 
-
-  const bamNutBack = () => {
-    console.log('Bạn đã bấm nút Back');
+  const getList = async () => {
+    try {
+      const res = await fetch('https://686f69f791e85fac42a0ef73.mockapi.io/users');
+      const arr = await res.json();
+      setdsDuLieu(arr);
+    } catch (error) {
+      console.log("Lỗi: ", error);
+    }
   }
 
+  useEffect(() => {
+    getList();
+  }, [])
+
   return (
-    
-    <ScrollView>
-      
-
-      <CustomHeader title="Tiêu đề màn hình" onBackPress={bamNutBack} />
-      <CustomHeader title="Tiêu đề màn hình" onBackPress={bamNutBack} />
-
-      <View style={{ backgroundColor: 'yellow', flex: 1 }}>
-        <Text style={{ fontSize: 30 }}>Xin chào</Text>
-
-        <Banner
-          title="Okok"
-          url="https://letsenhance.io/blog/content/images/2023/02/Image_Prompt_Guide_cover_1.png" />
-        <Banner
-          title="Không ok"
-          url="https://tse1.mm.bing.net/th/id/OIP.OFMlQdJWRGUjT2PNEWN00AHaEK?pid=Api&P=0&h=180"
-        />
-
-        <TouchableOpacity style={{
-          backgroundColor: '#007bff',
-          borderRadius: 8,
-          padding: 15,
-          alignItems: 'center',
-          marginTop: 10,
-          width: '50%',
-          alignSelf: 'center'
-        }}>
-          <Text>Đăng Nhập</Text>
-        </TouchableOpacity>
-
-        <DemoSection title="Danh sách sản phẩm"
-         style={{backgroundColor: 'yellow', margin:20}} >
-         <Text>Sản phẩm 1</Text>
-         <Text>Sản phẩm 1</Text>
-         <TextInput placeholder='Nhập văn bản.....' />
-     </DemoSection>
-     <DemoSection title="Địa chỉ nhận hàng"
-         style={{backgroundColor:'cyan', margin:20}}>
-         <Text>Địa chỉ số 1</Text>
-         <Text>Địa chỉ số 1</Text>
-         <Text>Địa chỉ số 1</Text>
-     </DemoSection>
-
-  <Text>Nội dung nhập: Họ tên = {hoTen}, email = {email} </Text>
-
-
-     <DemoTextInput onChangeText={sethoTen} placeholder="Nhập vào họ tên"
-                   label ="Họ và tên"/>
-    
-     <DemoTextInput onChangeText={setEmail} placeholder="Nhập vào Email"
-                   label ="Email"/>
-
-
-
-      </View>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Danh sách người dùng</Text>
+      {
+        dsDuLieu ? (
+          dsDuLieu.map((item) => (
+            <View key={item.id} style={styles.item}>
+              <Image source={{ uri: item.avatar }} style={styles.avatar} />
+              <View style={styles.info}>
+                <Text style={styles.id}>ID: {item.id}</Text>
+                <Text style={styles.name}>Tên: {item.name}</Text>
+                <Text style={styles.date}>Ngày tạo: {new Date(item.createdAt).toLocaleDateString()}</Text>
+              </View>
+            </View>
+          ))
+        ) : (
+          <Text>Đang tải dữ liệu...</Text>
+        )
+      }
     </ScrollView>
   )
 }
 
 export default App
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    backgroundColor: '#fff',
+    flex: 1
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center'
+  },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    marginBottom: 12,
+    padding: 10,
+    borderRadius: 10
+  },
+  avatar: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    marginRight: 12
+  },
+  info: {
+    flex: 1
+  },
+  id: {
+    fontSize: 14,
+    color: '#444'
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: '600'
+  },
+  date: {
+    fontSize: 13,
+    color: '#777'
+  }
+})
